@@ -48,8 +48,25 @@ function show(req, res) {
 
 }
 
-function store(req, res) {
-   
+function store(req, res, next) {
+
+    const { title, director, abstract } = req.body;
+
+    // gestiamo il valore del nome file creato dal middleware
+    const imageName = `${req.file.filename}`;
+
+    const query = 'INSERT INTO movies (title, director, abstract, image) VALUES (?, ?, ?, ?)';
+
+    connection.query(query, [title, director, abstract, imageName], (err, result) => {
+        if (err) {
+            console.log(err)
+            return next (new Error("Errore interno del server"));    
+        }
+        res.status(201).json({
+            status: "success",
+            message: "New movie has been added"
+        });
+    })
 
 }
 
